@@ -61,16 +61,18 @@ class List
   private
 
   attr_reader :options
-  attr_accessor :head_node, :size
+  attr_accessor :head_node, :size, :comparator
 
   def maintain_sort_order?
     sort_option = options[:sorted]
-    raise ArgumentError(sort_option) unless [ 0, 1, nil ].member?(sort_option)
-    sort_option == 1
+    if sort_option.is_a?(Proc)
+      self.comparator = sort_option
+    end
+    !!sort_option
   end
 
   def sorted_insert(object)
-    additional_node = Node.new(object)
+    additional_node = new_node(object, comparator)
     if empty?
       self.head_node = additional_node
 
@@ -94,7 +96,7 @@ class List
   end
 
   def append(object)
-    additional_node = Node.new(object)
+    additional_node = new_node(object, comparator)
     if empty?
       self.head_node = additional_node
     else
@@ -105,5 +107,9 @@ class List
       current_node.next = additional_node
     end
     additional_node
+  end
+
+  def new_node(object, comparator)
+    Node.new(object, comparator)
   end
 end
