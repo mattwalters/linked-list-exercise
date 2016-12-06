@@ -9,7 +9,7 @@ describe List do
 
   describe "#add" do
     describe "with regular list" do
-      let(:list) { List.new(sorted: 0) }
+      let(:list) { List.new(sorted: false) }
 
       it "should add elements to end of list" do
         list.length.must_equal 0
@@ -26,7 +26,7 @@ describe List do
     end
 
     describe "with sorted list" do
-      let(:list) { List.new(sorted: 1) }
+      let(:list) { List.new(sorted: true) }
 
       it "should add elements based on sort order" do
         list.length.must_equal 0
@@ -47,6 +47,32 @@ describe List do
         list.elements.must_equal(['alf', 'bar', 'baz', 'foo', 'zed'])
       end
     end
+
+    describe 'with custom comparator' do
+      # reverse comparator
+      let(:comparator) { Proc.new { |a, b| b <=> a } }
+      let(:list) { List.new(sorted: comparator) }
+
+      it "should add elements based on sort order" do
+        list.length.must_equal 0
+
+        list.add('foo')
+        list.elements.must_equal(['foo'])
+
+        list.add('bar')
+        list.elements.must_equal(['foo', 'bar'])
+
+        list.add('baz')
+        list.elements.must_equal(['foo', 'baz', 'bar'])
+
+        list.add('zed')
+        list.elements.must_equal(['zed', 'foo', 'baz', 'bar'])
+
+        list.add('alf')
+        list.elements.must_equal(['zed', 'foo', 'baz', 'bar', 'alf'])
+      end
+    end
+
   end
 
   describe '#length' do
