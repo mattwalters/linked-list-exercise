@@ -1,4 +1,5 @@
 class Node
+  include Comparable
 
   attr_reader :object
   attr_accessor :next
@@ -8,4 +9,7 @@ class Node
     @next = nil
   end
 
+  def <=>(other)
+    object <=> other.object
+  end
 end
